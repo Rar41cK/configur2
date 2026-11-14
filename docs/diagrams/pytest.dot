@@ -1,0 +1,15 @@
+strict digraph dependencies {
+  graph [rankdir=LR, bgcolor="white", pad=0.18, nodesep=0.33];
+  node [shape=box, style="rounded,filled", fontname="Helvetica",
+        color="#B8C6D5", fillcolor="#F2F6FA", fontcolor="#182A3B"];
+  edge [color="#52708C", arrowsize=0.7];
+  "pytest" [label="pytest\n9.2.0", fillcolor="#1D4B72", fontcolor="white", color="#1D4B72"];
+  "iniconfig" [label="iniconfig\n2.3.1"];
+  "packaging" [label="packaging\n26.3"];
+  "pluggy" [label="pluggy\n1.7.0"];
+  "pygments" [label="pygments\n2.21.0"];
+  "pytest" -> "iniconfig";
+  "pytest" -> "packaging";
+  "pytest" -> "pluggy";
+  "pytest" -> "pygments";
+}

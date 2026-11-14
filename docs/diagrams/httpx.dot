@@ -1,0 +1,21 @@
+strict digraph dependencies {
+  graph [rankdir=LR, bgcolor="white", pad=0.18, nodesep=0.33];
+  node [shape=box, style="rounded,filled", fontname="Helvetica",
+        color="#B8C6D5", fillcolor="#F2F6FA", fontcolor="#182A3B"];
+  edge [color="#52708C", arrowsize=0.7];
+  "httpx" [label="httpx\n0.28.1", fillcolor="#1D4B72", fontcolor="white", color="#1D4B72"];
+  "anyio" [label="anyio\n4.16.0"];
+  "idna" [label="idna\n3.20"];
+  "typing-extensions" [label="typing-extensions\n4.16.0"];
+  "certifi" [label="certifi\n2026.10.23"];
+  "httpcore" [label="httpcore\n1.0.9"];
+  "h11" [label="h11\n0.16.0"];
+  "httpx" -> "anyio";
+  "httpx" -> "certifi";
+  "httpx" -> "httpcore";
+  "httpx" -> "idna";
+  "anyio" -> "idna";
+  "anyio" -> "typing-extensions";
+  "httpcore" -> "certifi";
+  "httpcore" -> "h11";
+}

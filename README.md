@@ -154,8 +154,9 @@ mkdir -p build
 ./run.sh --package pytest --output build/pytest.svg
 ```
 
-В комплекте сдачи готовые пары DOT/SVG лежат в соседней папке
-`variant-8-diagrams`. Состав графов проверен по полям `Name`,
+Готовые диаграммы можно открыть в репозитории. [requests](docs/diagrams/requests.svg),
+[httpx](docs/diagrams/httpx.svg) и [pytest](docs/diagrams/pytest.svg).
+Исходники DOT лежат рядом. Состав графов проверен по полям `Name`,
 `Version` и `Requires` команды `pip show` для каждого пакета
 в той же контрольной установке, что на этапе 4. Каждая строка
 `Requires` задаёт исходящие рёбра одной вершины. Оформление

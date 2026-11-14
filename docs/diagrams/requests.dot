@@ -1,0 +1,15 @@
+strict digraph dependencies {
+  graph [rankdir=LR, bgcolor="white", pad=0.18, nodesep=0.33];
+  node [shape=box, style="rounded,filled", fontname="Helvetica",
+        color="#B8C6D5", fillcolor="#F2F6FA", fontcolor="#182A3B"];
+  edge [color="#52708C", arrowsize=0.7];
+  "requests" [label="requests\n2.34.2", fillcolor="#1D4B72", fontcolor="white", color="#1D4B72"];
+  "charset-normalizer" [label="charset-normalizer\n3.5.2"];
+  "idna" [label="idna\n3.20"];
+  "urllib3" [label="urllib3\n2.8.0"];
+  "certifi" [label="certifi\n2026.10.23"];
+  "requests" -> "charset-normalizer";
+  "requests" -> "idna";
+  "requests" -> "urllib3";
+  "requests" -> "certifi";
+}
