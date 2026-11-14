@@ -1,4 +1,4 @@
-"""Точка входа анализатора транзитивных зависимостей."""
+"""Точка входа для вывода порядка установки зависимостей."""
 
 import sys
 
@@ -20,7 +20,7 @@ def print_cycles(graph):
 
 
 def main(argv=None):
-    """Построить граф и показать список смежности."""
+    """Показать зависимости перед зависящими от них пакетами."""
     args = parse_args(argv)
     try:
         graph = read_graph(args)
@@ -28,8 +28,9 @@ def main(argv=None):
         print(f"Ошибка: {error}", file=sys.stderr)
         return 1
     print_cycles(graph)
-    for name, dependencies in graph.edges.items():
-        print(f"{name}: {', '.join(dependencies) or '∅'}")
+    if graph.cycles:
+        print("Для цикла строгого порядка нет.", file=sys.stderr)
+    print(" -> ".join(graph.postorder))
     return 0
 
 

@@ -11,6 +11,7 @@ class Graph:
     edges: dict = field(default_factory=dict)
     versions: dict = field(default_factory=dict)
     cycles: list = field(default_factory=list)
+    postorder: list = field(default_factory=list)
 
 
 def collect(graph, source):
@@ -36,7 +37,7 @@ def collect(graph, source):
 
 
 def scan(graph):
-    """Найти циклы при обходе объединённого графа пакетов."""
+    """Найти циклы и записать вершины при выходе из рекурсии."""
     finished, active, path = set(), {}, []
 
     def visit(name):
@@ -55,6 +56,7 @@ def scan(graph):
         path.pop()
         del active[name]
         finished.add(name)
+        graph.postorder.append(name)
 
     visit(graph.root)
 
