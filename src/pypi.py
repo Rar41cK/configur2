@@ -61,7 +61,8 @@ class PyPIRepository:
                 data = json.load(response)
         except HTTPError as error:
             if error.code == HTTP_NOT_FOUND:
-                raise ValueError(f"Пакет {name!r} отсутствует в PyPI") from error
+                message = f"Пакет {name!r} отсутствует в репозитории"
+                raise ValueError(message) from error
             raise ValueError(f"HTTP {error.code} при запросе {url}") from error
         except (URLError, OSError, HTTPException) as error:
             raise ValueError(f"Не удалось прочитать {url}: {error}") from error
@@ -70,4 +71,5 @@ class PyPIRepository:
         try:
             return parse_project(data)
         except (AttributeError, KeyError, TypeError, ValueError) as error:
-            raise ValueError(f"Неверные метаданные {name!r}: {error}") from error
+            message = f"Неверные метаданные {name!r}: {error}"
+            raise ValueError(message) from error

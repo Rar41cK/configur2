@@ -59,7 +59,7 @@ def release_parts(value):
 def compare_release(left, right, operation):
     """Сравнить версии численно с выравниванием нулевыми компонентами."""
     if operation in {"==", "!="} and right.endswith(".*"):
-        prefix = release_parts(right[:-2])
+        prefix = release_parts(right.removesuffix(".*"))
         values = release_parts(left) + (0,) * len(prefix)
         return (values[:len(prefix)] == prefix) == (operation == "==")
     left_parts, right_parts = release_parts(left), release_parts(right)
@@ -67,8 +67,11 @@ def compare_release(left, right, operation):
     left_parts += (0,) * (size - len(left_parts))
     right_parts += (0,) * (size - len(right_parts))
     if operation == "~=":
-        count = len(right.split(".")) - 1
-        return left_parts >= right_parts and left_parts[:count] == right_parts[:count]
+        count = len(release_parts(right)) - 1
+        if not count:
+            raise ValueError("Для ~= необходимы хотя бы два компонента версии")
+        same_prefix = left_parts[:count] == right_parts[:count]
+        return left_parts >= right_parts and same_prefix
     return OPERATORS[operation](left_parts, right_parts)
 
 
@@ -151,5 +154,5 @@ class Marker:
         if version and operation in (*OPERATORS, "~="):
             return compare_release(left, right, operation)
         if operation not in OPERATORS:
-            raise ValueError(f"Неподдерживаемый оператор маркера: {operation!r}")
+            raise ValueError(f"Неподдерживаемый оператор: {operation!r}")
         return OPERATORS[operation](left, right)

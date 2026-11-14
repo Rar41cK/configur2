@@ -35,7 +35,8 @@ def parse_requirement(text, values):
     if marker.strip() and not Marker(marker, values).evaluate():
         return None
     names = extras.split(",") if extras else ()
-    return Dependency(normalize(name), tuple(normalize(n.strip()) for n in names))
+    normalized_extras = tuple(normalize(extra.strip()) for extra in names)
+    return Dependency(normalize(name), normalized_extras)
 
 
 class PyPISource:
@@ -67,7 +68,8 @@ def load_repository(path):
     try:
         data = json.loads(Path(path).read_text(encoding="utf-8"))
     except (OSError, ValueError) as error:
-        raise ValueError(f"Ошибка чтения тестового репозитория: {error}") from error
+        message = f"Ошибка чтения тестового репозитория: {error}"
+        raise ValueError(message) from error
     if not isinstance(data, dict):
         raise ValueError("Тестовый репозиторий должен быть JSON-объектом")
     for name, deps in data.items():
@@ -88,7 +90,8 @@ class LocalSource:
     def version(self, name):
         """Проверить наличие имени, версия тестовым пакетам не нужна."""
         if name not in self.data:
-            raise ValueError(f"Пакет {name!r} отсутствует в тестовом репозитории")
+            message = f"Пакет {name!r} отсутствует в тестовом репозитории"
+            raise ValueError(message)
         return ""
 
     def dependencies(self, name, extra):

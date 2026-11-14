@@ -40,8 +40,11 @@ class MarkerTests(unittest.TestCase):
 
     def test_direct_reference(self):
         """Не интерпретировать точку с запятой в URL как маркер."""
-        text = 'pkg @ https://example.org/source;a=1 ; python_version == "3.*"'
-        self.assertEqual(parse_requirement(text, self.values), Dependency("pkg"))
+        url = "https://example.org/source;a=1"
+        text = f'pkg @ {url} ; python_version == "3.*"'
+        self.assertEqual(
+            parse_requirement(text, self.values), Dependency("pkg")
+        )
 
     def test_invalid_marker(self):
         """Выдать явную ошибку при неизвестном синтаксисе."""

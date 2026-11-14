@@ -8,10 +8,9 @@ class Graph:
     """Список смежности, метаданные и циклы достижимых пакетов."""
 
     root: str
-    edges: dict = field(default_factory=dict)
-    versions: dict = field(default_factory=dict)
-    cycles: list = field(default_factory=list)
-    postorder: list = field(default_factory=list)
+    edges: dict[str, dict[str, None]] = field(default_factory=dict)
+    versions: dict[str, str] = field(default_factory=dict)
+    cycles: list[tuple[str, ...]] = field(default_factory=list)
 
 
 def collect(graph, source):
@@ -37,15 +36,13 @@ def collect(graph, source):
 
 
 def scan(graph):
-    """Найти циклы и записать вершины при выходе из рекурсии."""
+    """Найти циклы при обходе объединённого графа пакетов."""
     finished, active, path = set(), {}, []
 
     def visit(name):
         """Зафиксировать цикл при повторном посещении активной вершины."""
         if name in active:
-            cycle = (*path[active[name]:], name)
-            if cycle not in graph.cycles:
-                graph.cycles.append(cycle)
+            graph.cycles.append((*path[active[name]:], name))
             return
         if name in finished:
             return
@@ -56,7 +53,6 @@ def scan(graph):
         path.pop()
         del active[name]
         finished.add(name)
-        graph.postorder.append(name)
 
     visit(graph.root)
 

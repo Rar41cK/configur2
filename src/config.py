@@ -6,6 +6,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 PYPI_URL = "https://pypi.org"
+DISABLED_PORT = 0
 PACKAGE_NAME = r"[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?"
 TEST_NAME = r"[A-Z]+"
 
@@ -33,11 +34,18 @@ def validate_repository(repository, is_test):
         return PYPI_URL
     try:
         url = urlsplit(repository)
-        valid = url.scheme in {"https", "http"} and url.hostname and url.port != 0
+        valid = (
+            url.scheme in {"https", "http"}
+            and url.hostname
+            and url.port != DISABLED_PORT
+        )
     except ValueError:
         valid = False
-    if not valid or url.query or url.fragment or url.username is not None:
-        raise ValueError("--repo: укажите базовый URL HTTP(S) без учётных данных")
+    has_query_or_fragment = "?" in repository or "#" in repository
+    if not valid or url.username is not None or has_query_or_fragment:
+        raise ValueError(
+            "--repo: укажите базовый URL HTTP(S) без учётных данных"
+        )
     if any(character.isspace() for character in repository):
         raise ValueError("--repo: URL должен быть без пробельных символов")
     return repository.rstrip("/")
@@ -49,6 +57,8 @@ def validate_output(output):
         raise ValueError("--output: укажите имя файла с расширением .svg")
     if not output.parent.is_dir():
         raise ValueError("--output: каталог назначения не существует")
+    if output.with_suffix(".dot").is_dir():
+        raise ValueError("--output: путь для DOT занят каталогом")
 
 
 def make_parser():
@@ -74,7 +84,12 @@ def parse_args(argv=None):
         validate_package(args.package, args.test_repo)
         args.repo = validate_repository(args.repo, args.test_repo)
         validate_output(args.output)
-    except (ValueError, OSError) as error:
+        if args.test_repo:
+            repository_path = Path(args.repo).resolve()
+            outputs = (args.output, args.output.with_suffix(".dot"))
+            if repository_path in {path.resolve() for path in outputs}:
+                raise ValueError("--output: совпадает с тестовым репозиторием")
+    except (ValueError, OSError, RuntimeError) as error:
         parser.error(str(error))
     if not args.test_repo:
         args.package = normalize(args.package)

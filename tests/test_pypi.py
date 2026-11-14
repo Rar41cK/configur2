@@ -35,20 +35,22 @@ class PyPITests(unittest.TestCase):
 
     def test_null_requirements(self):
         """Пустое поле считать отсутствием зависимостей."""
-        result = parse_project({"info": {"version": "1", "requires_dist": None}})
+        info = {"version": "1", "requires_dist": None}
+        result = parse_project({"info": info})
         self.assertEqual(result.requirements, ())
 
     def test_network_errors(self):
         """Недоступный сервер и отсутствующий проект дают разные ошибки."""
         missing = HTTPError("https://example.org", 404, "Not found", {}, None)
-        for error, message in ((missing, "отсутствует"), (URLError("X"), "прочитать")):
+        cases = ((missing, "отсутствует"), (URLError("X"), "прочитать"))
+        for error, message in cases:
             with self.subTest(error=error):
                 with patch("pypi.urlopen", side_effect=error):
                     with self.assertRaisesRegex(ValueError, message):
                         self.repo.project("demo")
 
     def test_invalid_response(self):
-        """Некорректный JSON и структура метаданных дают диагностируемый сбой."""
+        """Некорректный JSON и метаданные дают разные сообщения об ошибке."""
         samples = ((b'!', "Некорректный JSON"), (b'{"info": []}', "метаданные"))
         for data, message in samples:
             with self.subTest(data=data):

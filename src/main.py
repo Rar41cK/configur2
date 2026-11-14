@@ -1,10 +1,11 @@
-"""Точка входа для вывода порядка установки зависимостей."""
+"""Точка входа визуализатора графа зависимостей."""
 
 import sys
 
 from config import parse_args
 from graph import build_graph
 from repositories import LocalSource, PyPISource
+from visualize import save_graph
 
 
 def read_graph(args):
@@ -20,17 +21,17 @@ def print_cycles(graph):
 
 
 def main(argv=None):
-    """Показать зависимости перед зависящими от них пакетами."""
+    """Построить граф, сообщить о циклах и сохранить диаграмму."""
     args = parse_args(argv)
     try:
         graph = read_graph(args)
-    except (ValueError, RecursionError) as error:
+        print_cycles(graph)
+        output_dot = save_graph(graph, args.output)
+    except (ValueError, OSError, RecursionError) as error:
         print(f"Ошибка: {error}", file=sys.stderr)
         return 1
-    print_cycles(graph)
-    if graph.cycles:
-        print("Для цикла строгого порядка нет.", file=sys.stderr)
-    print(" -> ".join(graph.postorder))
+    print(f"DOT: {output_dot}")
+    print(f"SVG: {args.output}")
     return 0
 
 
