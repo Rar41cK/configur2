@@ -17,3 +17,15 @@ python3 -m unittest discover -s tests -v
 JSON API PyPI, включая условные зависимости. Запросы делает `urllib`,
 ответы читает `json`. Параметр `--repo` принимает базовый адрес сервера,
 который отвечает на запросы вида `/pypi/имя/json`.
+
+## Этап 3
+
+Рекурсивный DFS раскрывает зависимости и сохраняет циклические рёбра.
+Локальные репозитории описываются JSON-объектами с именами из заглавных
+латинских букв. Достижимый граф выводится в виде списка смежности.
+
+```sh
+./run.sh --package A --test-repo --repo examples/diamond.json
+./run.sh --package A --test-repo --repo examples/cycle.json
+./run.sh --package A --test-repo --repo examples/leaf.json
+```
