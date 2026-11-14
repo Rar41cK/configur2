@@ -10,3 +10,10 @@
 ./run.sh --package requests --repo https://pypi.org --output requests.svg
 python3 -m unittest discover -s tests -v
 ```
+
+## Этап 2
+
+`./run.sh --package requests` печатает все строки `Requires-Dist` из
+JSON API PyPI, включая условные зависимости. Запросы делает `urllib`,
+ответы читает `json`. Параметр `--repo` принимает базовый адрес сервера,
+который отвечает на запросы вида `/pypi/имя/json`.
