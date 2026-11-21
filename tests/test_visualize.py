@@ -5,7 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as element_tree
 from pathlib import Path
 from unittest.mock import patch
 
@@ -52,6 +52,6 @@ class VisualizationTests(unittest.TestCase):
             )
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn("B -> C -> B", result.stderr)
-            svg = ET.parse(output).getroot()
+            svg = element_tree.parse(output).getroot()
             self.assertEqual(svg.tag, f"{SVG_NS}svg")
             self.assertIn('"C" -> "B";', output.with_suffix(".dot").read_text())
