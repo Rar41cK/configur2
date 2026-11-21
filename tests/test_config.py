@@ -34,5 +34,37 @@ class ConfigTests(unittest.TestCase):
                 self.assertIn(name, result.stderr)
 
 
+class URLValidationTests(unittest.TestCase):
+    """Проверить обработку URL без обращения к серверу."""
+
+    @classmethod
+    def setUpClass(cls):
+        """Загрузить модуль конфигурации из исходников."""
+        sys.path.insert(0, str(MAIN.parent))
+        import config
+        cls.config = config
+
+    def test_valid_url_and_defaults(self):
+        """Сохранить адрес зеркала и нормализовать имя пакета."""
+        args = self.config.parse_args([
+            "--package", "Foo_Bar", "--repo", "https://example.org/api/",
+        ])
+        self.assertEqual(args.package, "foo-bar")
+        self.assertEqual(args.repo, "https://example.org/api")
+        self.assertEqual(args.output, Path("dependencies.svg"))
+
+    def test_invalid_url_forms(self):
+        """Отклонить ошибки адреса после разделения валидации."""
+        samples = (
+            "", "ftp://host", "https://[", "https://host:abc",
+            "https://host:0", "https://host?", "https://host#",
+            "https://user:pass@host", "https://bad host",
+        )
+        for url in samples:
+            with self.subTest(url=url):
+                with self.assertRaises(ValueError):
+                    self.config.validate_remote_url(url)
+
+
 if __name__ == "__main__":
     unittest.main()

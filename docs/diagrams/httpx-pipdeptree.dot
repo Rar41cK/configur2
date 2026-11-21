@@ -1,0 +1,17 @@
+digraph {
+	"typing-extensions" [label="typing_extensions\n4.16.0"]
+	anyio -> "typing-extensions" [label=">=4.16.0"]
+	anyio -> idna [label=">=2.8"]
+	anyio [label="anyio\n4.16.0"]
+	certifi [label="certifi\n2026.10.23"]
+	h11 [label="h11\n0.16.0"]
+	httpcore -> certifi [label="any"]
+	httpcore -> h11 [label=">=0.16"]
+	httpcore [label="httpcore\n1.0.9"]
+	httpx -> anyio [label="any"]
+	httpx -> certifi [label="any"]
+	httpx -> httpcore [label="==1.*"]
+	httpx -> idna [label="any"]
+	httpx [label="httpx\n0.28.1"]
+	idna [label="idna\n3.20"]
+}

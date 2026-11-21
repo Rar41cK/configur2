@@ -24,14 +24,8 @@ def validate_package(package, is_test):
         raise ValueError(f"--package: {package!r}, ожидается {expected}")
 
 
-def validate_repository(repository, is_test):
-    """Проверить путь к тестовому файлу или базовый URL JSON API."""
-    if is_test:
-        if not repository or not Path(repository).is_file():
-            raise ValueError("--repo: укажите существующий тестовый файл")
-        return repository
-    if repository is None:
-        return PYPI_URL
+def validate_remote_url(repository):
+    """Проверить базовый адрес сервера с PyPI JSON API."""
     try:
         url = urlsplit(repository)
         valid = (
@@ -39,8 +33,8 @@ def validate_repository(repository, is_test):
             and url.hostname
             and url.port != DISABLED_PORT
         )
-    except ValueError:
-        valid = False
+    except ValueError as error:
+        raise ValueError("--repo: некорректный URL HTTP(S)") from error
     has_query_or_fragment = "?" in repository or "#" in repository
     if not valid or url.username is not None or has_query_or_fragment:
         raise ValueError(
@@ -49,6 +43,15 @@ def validate_repository(repository, is_test):
     if any(character.isspace() for character in repository):
         raise ValueError("--repo: URL должен быть без пробельных символов")
     return repository.rstrip("/")
+
+
+def validate_repository(repository, is_test):
+    """Проверить путь к тестовому файлу или базовый URL JSON API."""
+    if is_test:
+        if not repository or not Path(repository).is_file():
+            raise ValueError("--repo: укажите существующий тестовый файл")
+        return repository
+    return validate_remote_url(PYPI_URL if repository is None else repository)
 
 
 def validate_output(output):

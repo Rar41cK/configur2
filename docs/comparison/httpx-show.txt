@@ -1,0 +1,28 @@
+Name: httpx
+Version: 0.28.1
+Requires: anyio, certifi, httpcore, idna
+Required-by:
+Name: httpcore
+Version: 1.0.9
+Requires: certifi, h11
+Required-by: httpx
+Name: anyio
+Version: 4.16.0
+Requires: idna, typing_extensions
+Required-by: httpx
+Name: idna
+Version: 3.20
+Requires:
+Required-by: anyio, httpx
+Name: certifi
+Version: 2026.10.23
+Requires:
+Required-by: httpcore, httpx
+Name: h11
+Version: 0.16.0
+Requires:
+Required-by: httpcore
+Name: typing_extensions
+Version: 4.16.0
+Requires:
+Required-by: anyio

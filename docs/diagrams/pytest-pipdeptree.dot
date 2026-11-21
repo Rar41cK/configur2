@@ -1,0 +1,11 @@
+digraph {
+	iniconfig [label="iniconfig\n2.3.1"]
+	packaging [label="packaging\n26.3"]
+	pluggy [label="pluggy\n1.7.0"]
+	pygments [label="Pygments\n2.21.0"]
+	pytest -> iniconfig [label=">=2"]
+	pytest -> packaging [label=">=24"]
+	pytest -> pluggy [label=">=1.6,<2"]
+	pytest -> pygments [label=">=2.15"]
+	pytest [label="pytest\n9.2.0"]
+}
